@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant with TinyLlama</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        header {
+            background: #1560bd;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        button {
+            background: #1560bd;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        button:hover {
+            background: #134a8e;
+        }
+
+        .output {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #result, #output {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            background: #1560bd;
+            color: white;
+        }
+    </style>
+    <script>
+        let recognition;
+        let synth;
+        let speaking = false; // Track if speech synthesis is ongoing
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const startButton = document.getElementById("start");
+            const outputDiv = document.getElementById("output");
+            const resultDiv = document.getElementById("result");
+
+            // Initialize Speech Recognition
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = "en-US";
+
+            // Initialize Speech Synthesis
+            synth = window.speechSynthesis;
+
+            startButton.addEventListener("click", () => {
+                resultDiv.innerText = "Listening...";
+                recognition.start();
+            });
+
+            recognition.onresult = async (event) => {
+                const transcript = event.results[0][0].transcript;
+                resultDiv.innerText = `You said: "${transcript}"`;
+                outputDiv.innerText = "Processing...";
+
+                // Stop any ongoing speech synthesis before making a new request
+                if (speaking) {
+                    synth.cancel();
+                    speaking = false;
+                }
+
+                // Send query to Flask backend
+                try {
+                    const response = await fetch('http://127.0.0.1:5000/query', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ prompt: transcript })
+                    });
+                    const data = await response.json();
+                    const aiResponse = data.response;
+
+                    // Display and speak AI response
+                    outputDiv.innerText = `AI response: "${aiResponse}"`;
+                    const utterance = new SpeechSynthesisUtterance(aiResponse);
+
+                    // Handle speech synthesis end event
+                    utterance.onstart = () => {
+                        speaking = true;
+                    };
+                    utterance.onend = () => {
+                        speaking = false;
+                    };
+
+                    synth.speak(utterance);
+                } catch (error) {
+                    console.error("Error:", error);
+                    outputDiv.innerText = "Error processing your request.";
+                }
+            };
+
+            recognition.onerror = (event) => {
+                resultDiv.innerText = "Sorry, I could not understand that.";
+                console.error("Speech Recognition Error:", event.error);
+            };
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Voice Assistant with TinyLlama</h1>
+    </header>
+    <div class="container">
+        <div class="content">
+            <p>Click the button below to start speaking. Your query will be processed, and the AI will respond with an answer.</p>
+            <button id="start">Start Speaking</button>
+            <div id="result" class="output">Say something...</div>
+            <div id="output" class="output"></div>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 Voice Assistant | Powered by TinyLlama</p>
+    </footer>
+</body>
+</html>
