@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Screen Stream</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .stream-container {
+      margin-top: 40px;
+    }
+    img {
+      width: 80%;
+      border: 5px solid #333;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
+  </style>
+</head>
+<body>
+  <h1>Live Screen Stream</h1>
+  <div class="stream-container">
+    <img src="http://49.43.90.27:5000/stream" alt="Live Stream">
+  </div>
+</body>
+</html>
