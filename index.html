@@ -111,11 +111,7 @@
 
     /* QUICK LINKS */
     .links-section { animation:fadeUp 0.6s 0.4s ease both; margin-bottom:3rem; }
-    .link-card {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:1.1rem 1.4rem; background:var(--surface); border:1px solid var(--border);
-      border-radius:10px; margin-bottom:10px; gap:12px; transition:border-color 0.2s, background 0.2s;
-    }
+    .link-card { display:flex; align-items:center; padding:1.1rem 1.4rem; background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:10px; gap:12px; transition:border-color 0.2s, background 0.2s; }
     .link-card:hover { border-color:rgba(200,255,0,0.3); background:var(--accent-dim); }
     .link-card:hover .arrow { color:var(--accent); transform:translate(3px,-3px); }
     .link-anchor { display:flex; align-items:center; gap:12px; flex:1; min-width:0; text-decoration:none; color:inherit; }
@@ -147,7 +143,6 @@
     .footer-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); opacity:0.5; }
 
     @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-
     @media (max-width:500px) {
       main { padding:3rem 1.25rem 2rem; }
       .copy-row { flex-direction:column; }
@@ -159,7 +154,6 @@
 <body>
   <div class="noise"></div>
 
-  <!-- LOCK SCREEN -->
   <div id="lock-screen">
     <div class="lock-box">
       <div class="lock-icon">🔒</div>
@@ -174,7 +168,6 @@
     </div>
   </div>
 
-  <!-- MAIN -->
   <main id="main-content">
     <div class="badge">File sharing by Rajveer</div>
     <h1>Send files.<br><span>Fast & clean.</span></h1>
@@ -240,13 +233,30 @@
     </div>
   </footer>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDEBTFKoVwfbMeSAcKTmU5pp3vIm003lC8",
+      authDomain: "link-sync-73846.firebaseapp.com",
+      projectId: "link-sync-73846",
+      storageBucket: "link-sync-73846.firebasestorage.app",
+      messagingSenderId: "893996904585",
+      appId: "1:893996904585:web:0ce638edf04127c977d658",
+      measurementId: "G-ZBVVT49N46"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const linksCol = collection(db, 'links');
+
     const KEY = '1667';
     const BASE = 'https://fr.lowkey.nichesite.org/';
-    // Change this to your server's address + port
-    const API = 'http://fr.lowkey.nichesite.org:5000';
 
-    function checkKey() {
+    let unsubscribe = null;
+
+    window.checkKey = function() {
       const val = document.getElementById('key-input').value.trim();
       const input = document.getElementById('key-input');
       const err = document.getElementById('lock-error');
@@ -255,7 +265,7 @@
         document.getElementById('main-content').classList.add('visible');
         document.getElementById('footer').classList.add('visible');
         err.textContent = '';
-        fetchLinks();
+        startListening();
       } else {
         input.classList.add('error');
         err.textContent = 'Wrong key. Try again.';
@@ -264,23 +274,25 @@
       }
     }
 
-    function lockSite() {
+    window.lockSite = function() {
       document.getElementById('lock-screen').classList.remove('hidden');
       document.getElementById('main-content').classList.remove('visible');
       document.getElementById('footer').classList.remove('visible');
       document.getElementById('key-input').value = '';
       document.getElementById('lock-error').textContent = '';
+      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
     }
 
-    async function fetchLinks() {
-      const c = document.getElementById('links-container');
-      try {
-        const res = await fetch(API + '/links');
-        const links = await res.json();
+    function startListening() {
+      const q = query(linksCol, orderBy('createdAt'));
+      unsubscribe = onSnapshot(q, (snapshot) => {
+        const links = [];
+        snapshot.forEach(d => links.push({ id: d.id, ...d.data() }));
         renderLinks(links);
-      } catch {
-        c.innerHTML = '<div class="empty-state" style="color:var(--red)">Could not reach server. Is server.py running?</div>';
-      }
+      }, (err) => {
+        document.getElementById('links-container').innerHTML =
+          '<div class="empty-state" style="color:var(--red)">Firestore error. Did you enable it in the Firebase console?</div>';
+      });
     }
 
     function esc(s) {
@@ -290,7 +302,7 @@
     function renderLinks(links) {
       const c = document.getElementById('links-container');
       if (!links.length) { c.innerHTML = '<div class="empty-state">No links yet — add one above.</div>'; return; }
-      c.innerHTML = links.map((l, i) => `
+      c.innerHTML = links.map(l => `
         <div class="link-card">
           <a class="link-anchor" href="${esc(l.url)}" target="_blank" rel="noopener">
             <div class="link-info">
@@ -299,12 +311,12 @@
             </div>
             <span class="arrow">↗</span>
           </a>
-          <button class="delete-btn" onclick="deleteLink(${i})" title="Remove">✕</button>
+          <button class="delete-btn" onclick="deleteLink('${esc(l.id)}')" title="Remove">✕</button>
         </div>
       `).join('');
     }
 
-    async function addLink() {
+    window.addLink = async function() {
       const label = document.getElementById('new-label').value.trim();
       const raw = document.getElementById('new-url').value.trim();
       const el = document.getElementById('upload-status');
@@ -316,45 +328,32 @@
       }
 
       const url = raw.startsWith('http') ? raw : BASE + raw.replace(/^\/+/, '');
-
       btn.disabled = true; btn.textContent = 'Adding...';
+
       try {
-        const res = await fetch(API + '/links', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Key': KEY },
-          body: JSON.stringify({ label, url })
-        });
-        if (!res.ok) throw new Error();
+        await addDoc(linksCol, { label, url, createdAt: Date.now() });
         document.getElementById('new-label').value = '';
         document.getElementById('new-url').value = '';
         el.style.color = 'var(--accent)'; el.textContent = 'Link added!';
         setTimeout(() => el.textContent = '', 2000);
-        fetchLinks();
       } catch {
-        el.style.color = 'var(--red)'; el.textContent = 'Failed to add. Is server running?';
+        el.style.color = 'var(--red)'; el.textContent = 'Failed. Check Firestore is enabled.';
         setTimeout(() => el.textContent = '', 3000);
       }
       btn.disabled = false; btn.textContent = '+ Add';
     }
 
-    async function deleteLink(index) {
-      try {
-        await fetch(API + '/links/' + index, {
-          method: 'DELETE',
-          headers: { 'X-Key': KEY }
-        });
-        fetchLinks();
-      } catch {
-        alert('Could not delete. Is server running?');
-      }
+    window.deleteLink = async function(id) {
+      try { await deleteDoc(doc(db, 'links', id)); }
+      catch { alert('Could not delete. Check Firestore permissions.'); }
     }
 
-    function buildLink() {
+    window.buildLink = function() {
       const path = document.getElementById('pathInput').value.trim().replace(/^\/+/, '');
       document.getElementById('preview').textContent = path ? BASE + path : '';
     }
 
-    function copyLink() {
+    window.copyLink = function() {
       const path = document.getElementById('pathInput').value.trim().replace(/^\/+/, '');
       if (!path) return;
       navigator.clipboard.writeText(BASE + path).then(() => {
