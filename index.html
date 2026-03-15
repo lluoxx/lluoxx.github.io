@@ -1,13 +1,409 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>Rajveer Singh Saini's WEBSITE</title>
-	</head>
-	<body>
-		<h1>this website is made for downloading file and just sharing stuff it can also be used for websites</h1>
-		<h1>you are seeing this because there is no website to put</h1>
-		<h1>you can be sent a link like "https://fr.lowkey.nichesite.org/file.zip" cuz im trying to send you a file more efficiently</h1>
-		<h1>for more info go to "https://fr.lowkey.nichesite.org/help.txt"</h1>
-	</body>
-</html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rajveer's Drop — File Sharing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --border: #222;
+      --accent: #c8ff00;
+      --accent-dim: rgba(200, 255, 0, 0.08);
+      --text: #f0f0f0;
+      --muted: #666;
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-display);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(200,255,0,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(200,255,0,0.03) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 128px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 5rem 2rem 4rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(200,255,0,0.25);
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .tagline {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 3.5rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 3rem;
+      animation: fadeUp 0.6s 0.25s ease both;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .how-it-works {
+      animation: fadeUp 0.6s 0.3s ease both;
+      margin-bottom: 3rem;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      min-width: 28px;
+      padding-top: 2px;
+    }
+
+    .step-text {
+      font-size: 15px;
+      font-weight: 400;
+      color: #ccc;
+      line-height: 1.5;
+    }
+
+    .step-text code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid rgba(200,255,0,0.15);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .links-section {
+      animation: fadeUp 0.6s 0.4s ease both;
+      margin-bottom: 3rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 1.4rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s, background 0.2s;
+      gap: 12px;
+    }
+
+    .link-card:hover {
+      border-color: rgba(200,255,0,0.3);
+      background: rgba(200,255,0,0.03);
+    }
+
+    .link-card:hover .arrow { color: var(--accent); transform: translate(3px, -3px); }
+
+    .link-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      overflow: hidden;
+    }
+
+    .link-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .link-url {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .arrow {
+      font-size: 18px;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .copy-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .copy-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      outline: none;
+      min-width: 0;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: #0a0a0a;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      letter-spacing: 0.04em;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .copy-btn:hover { opacity: 0.85; }
+    .copy-btn:active { transform: scale(0.97); }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: fadeUp 0.6s 0.5s ease both;
+    }
+
+    .footer-name {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    .footer-name strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .footer-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      main { padding: 3rem 1.25rem 2rem; }
+      .copy-row { flex-direction: column; }
+      .copy-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <main>
+    <div class="badge">File sharing by Rajveer</div>
+
+    <h1>Send files.<br><span>Fast & clean.</span></h1>
+
+    <p class="tagline">
+      A personal file-sharing server. You'll get a direct link — just click and download. No sign-ups, no fuss.
+    </p>
+
+    <div class="divider"></div>
+
+    <section class="how-it-works">
+      <p class="section-label">How it works</p>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">01</span>
+          <span class="step-text">You'll receive a direct link like <code>https://fr.lowkey.nichesite.org/file.zip</code></span>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <span class="step-text">Click the link — your file downloads instantly, no account needed.</span>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <span class="step-text">Need help or more info? Check the <code>/help.txt</code> page below.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="links-section">
+      <p class="section-label">Quick links</p>
+
+      <a class="link-card" href="https://fr.lowkey.nichesite.org/help.txt" target="_blank">
+        <div class="link-info">
+          <span class="link-title">Help & Documentation</span>
+          <span class="link-url">fr.lowkey.nichesite.org/help.txt</span>
+        </div>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a class="link-card" href="https://fr.lowkey.nichesite.org/" target="_blank">
+        <div class="link-info">
+          <span class="link-title">File Server Root</span>
+          <span class="link-url">fr.lowkey.nichesite.org/</span>
+        </div>
+        <span class="arrow">↗</span>
+      </a>
+
+      <div style="margin-top: 1.5rem;">
+        <p class="section-label">Paste a file path to build your link</p>
+        <div class="copy-row">
+          <input class="copy-input" type="text" id="pathInput" placeholder="e.g. myfile.zip" oninput="buildLink()">
+          <button class="copy-btn" onclick="copyLink()">Copy link</button>
+        </div>
+        <div id="preview" style="margin-top: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted);"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-name">Made by <strong>Rajveer Singh Saini</strong></span>
+    <div class="footer-dot"></div>
+  </footer>
+
+  <script>
+    function buildLink() {
+      const path = document.getElementById('pathInput').value.trim().replace(/^\/+/, '');
+      const preview = document.getElementById('preview');
+      if (path) {
+        preview.textContent = 'https://fr.lowkey.nichesite.org/' + path;
+      } else {
+        preview.textContent = '';
+      }
+    }
+
+    function copyLink() {
+      const path = document.getElementById('pathInput').value.trim().replace(/^\/+/, '');
+      if (!path) return;
+      const url = 'https://fr.lowkey.nichesite.org/' + path;
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy link', 1800);
+      });
+    }
+  </script>
+</body>
+</html>
