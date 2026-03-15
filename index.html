@@ -50,9 +50,7 @@
     }
     .lock-input:focus { border-color: rgba(200,255,0,0.4); }
     .lock-input.error { border-color: var(--red); animation: shake 0.3s ease; }
-    @keyframes shake {
-      0%,100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); }
-    }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
     .lock-error { font-family: var(--font-mono); font-size: 12px; color: var(--red); text-align: center; min-height: 16px; }
     .lock-btn {
       width: 100%; background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px;
@@ -72,127 +70,89 @@
       border: 1px solid rgba(200,255,0,0.25); padding: 6px 14px; border-radius: 100px;
       margin-bottom: 2.5rem; animation: fadeUp 0.6s ease both;
     }
-    .badge::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent); animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    .badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    h1 {
-      font-size: clamp(2.8rem,7vw,5.5rem); font-weight: 800; line-height: 1.0;
-      letter-spacing: -0.03em; margin-bottom: 1.5rem; animation: fadeUp 0.6s 0.1s ease both;
-    }
+    h1 { font-size: clamp(2.8rem,7vw,5.5rem); font-weight:800; line-height:1.0; letter-spacing:-0.03em; margin-bottom:1.5rem; animation:fadeUp 0.6s 0.1s ease both; }
     h1 span { color: var(--accent); }
-    .tagline {
-      font-family: var(--font-mono); font-size: 14px; font-weight: 300; color: var(--muted);
-      line-height: 1.7; max-width: 480px; margin-bottom: 3.5rem; animation: fadeUp 0.6s 0.2s ease both;
-    }
-    .divider { width: 100%; height: 1px; background: var(--border); margin-bottom: 3rem; animation: fadeUp 0.6s 0.25s ease both; }
-    .section-label {
-      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 1rem;
-    }
+    .tagline { font-family:var(--font-mono); font-size:14px; font-weight:300; color:var(--muted); line-height:1.7; max-width:480px; margin-bottom:3.5rem; animation:fadeUp 0.6s 0.2s ease both; }
+    .divider { width:100%; height:1px; background:var(--border); margin-bottom:3rem; animation:fadeUp 0.6s 0.25s ease both; }
+    .section-label { font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:1rem; }
 
     /* STEPS */
-    .how-it-works { animation: fadeUp 0.6s 0.3s ease both; margin-bottom: 3rem; }
-    .steps { display: flex; flex-direction: column; }
-    .step { display: flex; align-items: flex-start; gap: 1.5rem; padding: 1.25rem 0; border-bottom: 1px solid var(--border); }
-    .step:last-child { border-bottom: none; }
-    .step-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); min-width: 28px; padding-top: 2px; }
-    .step-text { font-size: 15px; font-weight: 400; color: #ccc; line-height: 1.5; }
-    .step-text code {
-      font-family: var(--font-mono); font-size: 13px; background: var(--accent-dim);
-      color: var(--accent); border: 1px solid rgba(200,255,0,0.15); padding: 2px 8px; border-radius: 4px;
-    }
+    .how-it-works { animation:fadeUp 0.6s 0.3s ease both; margin-bottom:3rem; }
+    .steps { display:flex; flex-direction:column; }
+    .step { display:flex; align-items:flex-start; gap:1.5rem; padding:1.25rem 0; border-bottom:1px solid var(--border); }
+    .step:last-child { border-bottom:none; }
+    .step-num { font-family:var(--font-mono); font-size:11px; color:var(--accent); min-width:28px; padding-top:2px; }
+    .step-text { font-size:15px; font-weight:400; color:#ccc; line-height:1.5; }
+    .step-text code { font-family:var(--font-mono); font-size:13px; background:var(--accent-dim); color:var(--accent); border:1px solid rgba(200,255,0,0.15); padding:2px 8px; border-radius:4px; }
 
     /* ADD LINK */
-    .upload-section { animation: fadeUp 0.6s 0.35s ease both; margin-bottom: 3rem; }
-    .upload-box {
-      background: var(--surface); border: 1px dashed #333;
-      border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 12px;
-    }
-    .upload-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .upload-section { animation:fadeUp 0.6s 0.35s ease both; margin-bottom:3rem; }
+    .upload-box { background:var(--surface); border:1px dashed #333; border-radius:12px; padding:1.5rem; display:flex; flex-direction:column; gap:14px; }
+    .upload-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .upload-input {
-      flex: 1; min-width: 140px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 8px;
-      padding: 10px 14px; font-family: var(--font-mono); font-size: 13px; color: var(--text);
-      outline: none; transition: border-color 0.2s;
+      flex:1; min-width:140px; background:#0a0a0a; border:1px solid var(--border); border-radius:8px;
+      padding:10px 14px; font-family:var(--font-mono); font-size:13px; color:var(--text); outline:none; transition:border-color 0.2s;
     }
-    .upload-input:focus { border-color: rgba(200,255,0,0.4); }
-    .upload-input::placeholder { color: var(--muted); }
+    .upload-input:focus { border-color:rgba(200,255,0,0.4); }
+    .upload-input::placeholder { color:var(--muted); }
     .upload-btn {
-      background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px;
-      padding: 10px 20px; font-family: var(--font-display); font-size: 13px; font-weight: 700;
-      cursor: pointer; flex-shrink: 0; letter-spacing: 0.04em; transition: opacity 0.15s, transform 0.1s;
-      white-space: nowrap;
+      background:var(--accent); color:#0a0a0a; border:none; border-radius:8px;
+      padding:10px 20px; font-family:var(--font-display); font-size:13px; font-weight:700;
+      cursor:pointer; flex-shrink:0; letter-spacing:0.04em; transition:opacity 0.15s, transform 0.1s; white-space:nowrap;
     }
-    .upload-btn:hover { opacity: 0.85; } .upload-btn:active { transform: scale(0.97); }
-    .upload-hint { font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.6; }
-    .upload-hint code { background: var(--accent-dim); color: var(--accent); padding: 1px 6px; border-radius: 3px; font-size: 11px; }
-    .upload-success { font-family: var(--font-mono); font-size: 12px; min-height: 18px; }
+    .upload-btn:hover { opacity:0.85; } .upload-btn:active { transform:scale(0.97); }
+    .upload-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .upload-hint { font-family:var(--font-mono); font-size:11px; color:var(--muted); line-height:1.6; }
+    .upload-hint code { background:var(--accent-dim); color:var(--accent); padding:1px 6px; border-radius:3px; font-size:11px; }
+    .upload-status { font-family:var(--font-mono); font-size:12px; min-height:18px; }
 
     /* QUICK LINKS */
-    .links-section { animation: fadeUp 0.6s 0.4s ease both; margin-bottom: 3rem; }
+    .links-section { animation:fadeUp 0.6s 0.4s ease both; margin-bottom:3rem; }
     .link-card {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.1rem 1.4rem; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; margin-bottom: 10px; gap: 12px;
-      transition: border-color 0.2s, background 0.2s;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.1rem 1.4rem; background:var(--surface); border:1px solid var(--border);
+      border-radius:10px; margin-bottom:10px; gap:12px; transition:border-color 0.2s, background 0.2s;
     }
-    .link-card:hover { border-color: rgba(200,255,0,0.3); background: var(--accent-dim); }
-    .link-card:hover .arrow { color: var(--accent); transform: translate(3px, -3px); }
-    .link-anchor { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; text-decoration: none; color: inherit; }
-    .link-info { display: flex; flex-direction: column; gap: 3px; overflow: hidden; flex: 1; min-width: 0; }
-    .link-title { font-size: 14px; font-weight: 700; color: var(--text); }
-    .link-url { font-family: var(--font-mono); font-size: 12px; font-weight: 300; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .arrow { font-size: 18px; color: var(--muted); flex-shrink: 0; transition: color 0.2s, transform 0.2s; }
-    .delete-btn {
-      background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px;
-      padding: 4px 8px; border-radius: 4px; flex-shrink: 0; line-height: 1;
-      transition: color 0.15s, background 0.15s;
-    }
-    .delete-btn:hover { color: var(--red); background: rgba(255,68,68,0.1); }
-    .empty-state { font-family: var(--font-mono); font-size: 12px; color: var(--muted); padding: 1rem 0; text-align: center; }
+    .link-card:hover { border-color:rgba(200,255,0,0.3); background:var(--accent-dim); }
+    .link-card:hover .arrow { color:var(--accent); transform:translate(3px,-3px); }
+    .link-anchor { display:flex; align-items:center; gap:12px; flex:1; min-width:0; text-decoration:none; color:inherit; }
+    .link-info { display:flex; flex-direction:column; gap:3px; overflow:hidden; flex:1; min-width:0; }
+    .link-title { font-size:14px; font-weight:700; color:var(--text); }
+    .link-url { font-family:var(--font-mono); font-size:12px; font-weight:300; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .arrow { font-size:18px; color:var(--muted); flex-shrink:0; transition:color 0.2s, transform 0.2s; }
+    .delete-btn { background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; padding:4px 8px; border-radius:4px; flex-shrink:0; line-height:1; transition:color 0.15s, background 0.15s; }
+    .delete-btn:hover { color:var(--red); background:rgba(255,68,68,0.1); }
+    .empty-state { font-family:var(--font-mono); font-size:12px; color:var(--muted); padding:1rem 0; text-align:center; }
+    .loading-state { font-family:var(--font-mono); font-size:12px; color:var(--muted); padding:1rem 0; text-align:center; animation:pulse 1.5s infinite; }
 
     /* BUILDER */
-    .builder-section { animation: fadeUp 0.6s 0.45s ease both; margin-bottom: 3rem; }
-    .copy-row { display: flex; gap: 10px; align-items: center; }
-    .copy-input {
-      flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-      padding: 10px 14px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); outline: none; min-width: 0;
-    }
-    .copy-btn {
-      background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px;
-      padding: 10px 18px; font-family: var(--font-display); font-size: 12px; font-weight: 700;
-      cursor: pointer; flex-shrink: 0; letter-spacing: 0.04em; transition: opacity 0.15s, transform 0.1s;
-    }
-    .copy-btn:hover { opacity: 0.85; } .copy-btn:active { transform: scale(0.97); }
-    #preview { margin-top: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); word-break: break-all; }
+    .builder-section { animation:fadeUp 0.6s 0.45s ease both; margin-bottom:3rem; }
+    .copy-row { display:flex; gap:10px; align-items:center; }
+    .copy-input { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:var(--font-mono); font-size:12px; color:var(--muted); outline:none; min-width:0; }
+    .copy-btn { background:var(--accent); color:#0a0a0a; border:none; border-radius:8px; padding:10px 18px; font-family:var(--font-display); font-size:12px; font-weight:700; cursor:pointer; flex-shrink:0; letter-spacing:0.04em; transition:opacity 0.15s, transform 0.1s; }
+    .copy-btn:hover { opacity:0.85; } .copy-btn:active { transform:scale(0.97); }
+    #preview { margin-top:10px; font-family:var(--font-mono); font-size:12px; color:var(--muted); word-break:break-all; }
 
     /* FOOTER */
-    footer {
-      position: relative; z-index: 1; border-top: 1px solid var(--border);
-      max-width: 760px; margin: 0 auto; padding: 1.5rem 2rem;
-      display: none; align-items: center; justify-content: space-between;
-    }
-    footer.visible { display: flex; }
-    .footer-name { font-family: var(--font-mono); font-size: 12px; font-weight: 300; color: var(--muted); }
-    .footer-name strong { color: var(--text); font-weight: 400; }
-    .footer-right { display: flex; align-items: center; gap: 12px; }
-    .lock-again-btn {
-      font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: none;
-      border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .lock-again-btn:hover { color: var(--text); border-color: #444; }
-    .footer-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.5; }
+    footer { position:relative; z-index:1; border-top:1px solid var(--border); max-width:760px; margin:0 auto; padding:1.5rem 2rem; display:none; align-items:center; justify-content:space-between; }
+    footer.visible { display:flex; }
+    .footer-name { font-family:var(--font-mono); font-size:12px; font-weight:300; color:var(--muted); }
+    .footer-name strong { color:var(--text); font-weight:400; }
+    .footer-right { display:flex; align-items:center; gap:12px; }
+    .lock-again-btn { font-family:var(--font-mono); font-size:11px; color:var(--muted); background:none; border:1px solid var(--border); border-radius:6px; padding:5px 12px; cursor:pointer; transition:color 0.15s, border-color 0.15s; }
+    .lock-again-btn:hover { color:var(--text); border-color:#444; }
+    .footer-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); opacity:0.5; }
 
-    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
-    @media (max-width: 500px) {
-      main { padding: 3rem 1.25rem 2rem; }
-      .copy-row { flex-direction: column; }
-      .copy-btn { width: 100%; }
-      .lock-box { padding: 2rem 1.5rem; }
+    @media (max-width:500px) {
+      main { padding:3rem 1.25rem 2rem; }
+      .copy-row { flex-direction:column; }
+      .copy-btn { width:100%; }
+      .lock-box { padding:2rem 1.5rem; }
     }
   </style>
 </head>
@@ -248,16 +208,16 @@
         <div class="upload-row">
           <input class="upload-input" type="text" id="new-label" placeholder="Label  e.g. Project Files" style="max-width:200px;">
           <input class="upload-input" type="text" id="new-url" placeholder="URL or filename  e.g. file.zip">
-          <button class="upload-btn" onclick="addLink()">+ Add</button>
+          <button class="upload-btn" id="add-btn" onclick="addLink()">+ Add</button>
         </div>
         <div class="upload-hint">Enter a label + full URL, or just a filename like <code>notes.pdf</code> — it auto-adds the base URL.</div>
-        <div class="upload-success" id="upload-success"></div>
+        <div class="upload-status" id="upload-status"></div>
       </div>
     </section>
 
     <section class="links-section">
       <p class="section-label">Quick links</p>
-      <div id="links-container"></div>
+      <div id="links-container"><div class="loading-state">Loading links...</div></div>
     </section>
 
     <div class="divider"></div>
@@ -283,12 +243,8 @@
   <script>
     const KEY = '1667';
     const BASE = 'https://fr.lowkey.nichesite.org/';
-    const STORE = 'rajveer_drop_links';
-
-    const DEFAULTS = [
-      { label: 'Help & Documentation', url: BASE + 'help.txt' },
-      { label: 'File Server Root', url: BASE }
-    ];
+    // Change this to your server's address + port
+    const API = 'http://fr.lowkey.nichesite.org:5000';
 
     function checkKey() {
       const val = document.getElementById('key-input').value.trim();
@@ -299,7 +255,7 @@
         document.getElementById('main-content').classList.add('visible');
         document.getElementById('footer').classList.add('visible');
         err.textContent = '';
-        renderLinks();
+        fetchLinks();
       } else {
         input.classList.add('error');
         err.textContent = 'Wrong key. Try again.';
@@ -316,22 +272,23 @@
       document.getElementById('lock-error').textContent = '';
     }
 
-    function getLinks() {
-      try { const s = localStorage.getItem(STORE); return s ? JSON.parse(s) : [...DEFAULTS]; }
-      catch { return [...DEFAULTS]; }
-    }
-
-    function saveLinks(links) {
-      try { localStorage.setItem(STORE, JSON.stringify(links)); } catch {}
+    async function fetchLinks() {
+      const c = document.getElementById('links-container');
+      try {
+        const res = await fetch(API + '/links');
+        const links = await res.json();
+        renderLinks(links);
+      } catch {
+        c.innerHTML = '<div class="empty-state" style="color:var(--red)">Could not reach server. Is server.py running?</div>';
+      }
     }
 
     function esc(s) {
-      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    function renderLinks() {
+    function renderLinks(links) {
       const c = document.getElementById('links-container');
-      const links = getLinks();
       if (!links.length) { c.innerHTML = '<div class="empty-state">No links yet — add one above.</div>'; return; }
       c.innerHTML = links.map((l, i) => `
         <div class="link-card">
@@ -347,28 +304,49 @@
       `).join('');
     }
 
-    function addLink() {
+    async function addLink() {
       const label = document.getElementById('new-label').value.trim();
       const raw = document.getElementById('new-url').value.trim();
-      const el = document.getElementById('upload-success');
+      const el = document.getElementById('upload-status');
+      const btn = document.getElementById('add-btn');
+
       if (!label || !raw) {
-        el.style.color = '#ff4444'; el.textContent = 'Please fill in both fields.';
+        el.style.color = 'var(--red)'; el.textContent = 'Please fill in both fields.';
         setTimeout(() => el.textContent = '', 2500); return;
       }
+
       const url = raw.startsWith('http') ? raw : BASE + raw.replace(/^\/+/, '');
-      const links = getLinks();
-      links.push({ label, url });
-      saveLinks(links); renderLinks();
-      document.getElementById('new-label').value = '';
-      document.getElementById('new-url').value = '';
-      el.style.color = 'var(--accent)'; el.textContent = 'Link added!';
-      setTimeout(() => el.textContent = '', 2000);
+
+      btn.disabled = true; btn.textContent = 'Adding...';
+      try {
+        const res = await fetch(API + '/links', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Key': KEY },
+          body: JSON.stringify({ label, url })
+        });
+        if (!res.ok) throw new Error();
+        document.getElementById('new-label').value = '';
+        document.getElementById('new-url').value = '';
+        el.style.color = 'var(--accent)'; el.textContent = 'Link added!';
+        setTimeout(() => el.textContent = '', 2000);
+        fetchLinks();
+      } catch {
+        el.style.color = 'var(--red)'; el.textContent = 'Failed to add. Is server running?';
+        setTimeout(() => el.textContent = '', 3000);
+      }
+      btn.disabled = false; btn.textContent = '+ Add';
     }
 
-    function deleteLink(i) {
-      const links = getLinks();
-      links.splice(i, 1);
-      saveLinks(links); renderLinks();
+    async function deleteLink(index) {
+      try {
+        await fetch(API + '/links/' + index, {
+          method: 'DELETE',
+          headers: { 'X-Key': KEY }
+        });
+        fetchLinks();
+      } catch {
+        alert('Could not delete. Is server running?');
+      }
     }
 
     function buildLink() {
