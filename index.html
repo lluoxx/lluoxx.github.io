@@ -8,325 +8,217 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #0a0a0a;
-      --surface: #111111;
-      --border: #222;
-      --accent: #c8ff00;
-      --accent-dim: rgba(200, 255, 0, 0.08);
-      --text: #f0f0f0;
-      --muted: #666;
-      --font-display: 'Syne', sans-serif;
-      --font-mono: 'DM Mono', monospace;
+      --bg: #0a0a0a; --surface: #111111; --border: #222;
+      --accent: #c8ff00; --accent-dim: rgba(200,255,0,0.08);
+      --text: #f0f0f0; --muted: #666; --red: #ff4444;
+      --font-display: 'Syne', sans-serif; --font-mono: 'DM Mono', monospace;
     }
-
-    html, body {
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-display);
-      overflow-x: hidden;
-    }
-
+    html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font-display); overflow-x: hidden; }
     body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(200,255,0,0.04) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(200,255,0,0.03) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 60% 40% at 80% 20%, rgba(200,255,0,0.04) 0%, transparent 60%),
+                  radial-gradient(ellipse 40% 60% at 10% 80%, rgba(200,255,0,0.03) 0%, transparent 60%);
     }
-
     .noise {
-      position: fixed;
-      inset: 0;
-      opacity: 0.025;
+      position: fixed; inset: 0; opacity: 0.025; pointer-events: none; z-index: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       background-size: 128px;
-      pointer-events: none;
-      z-index: 0;
     }
 
-    main {
-      position: relative;
-      z-index: 1;
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 5rem 2rem 4rem;
+    /* LOCK */
+    #lock-screen {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg); transition: opacity 0.4s, transform 0.4s;
     }
+    #lock-screen.hidden { opacity: 0; pointer-events: none; transform: scale(1.04); }
+    .lock-box {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2.5rem; width: 100%; max-width: 360px;
+      display: flex; flex-direction: column; gap: 1.25rem;
+      animation: fadeUp 0.5s ease both;
+    }
+    .lock-icon { font-size: 28px; }
+    .lock-title { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .lock-sub { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: -0.5rem; }
+    .lock-input {
+      width: 100%; background: #0a0a0a; border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 16px; font-family: var(--font-mono); font-size: 20px;
+      letter-spacing: 0.35em; color: var(--text); outline: none;
+      text-align: center; transition: border-color 0.2s;
+    }
+    .lock-input:focus { border-color: rgba(200,255,0,0.4); }
+    .lock-input.error { border-color: var(--red); animation: shake 0.3s ease; }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); }
+    }
+    .lock-error { font-family: var(--font-mono); font-size: 12px; color: var(--red); text-align: center; min-height: 16px; }
+    .lock-btn {
+      width: 100%; background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px;
+      padding: 13px; font-family: var(--font-display); font-size: 14px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.04em; transition: opacity 0.15s, transform 0.1s;
+    }
+    .lock-btn:hover { opacity: 0.85; } .lock-btn:active { transform: scale(0.98); }
+
+    /* MAIN */
+    main { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 5rem 2rem 4rem; display: none; }
+    main.visible { display: block; }
 
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 300;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid rgba(200,255,0,0.25);
-      padding: 6px 14px;
-      border-radius: 100px;
-      margin-bottom: 2.5rem;
-      animation: fadeUp 0.6s ease both;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 300;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+      border: 1px solid rgba(200,255,0,0.25); padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 2.5rem; animation: fadeUp 0.6s ease both;
     }
-
     .badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s infinite;
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
     h1 {
-      font-size: clamp(2.8rem, 7vw, 5.5rem);
-      font-weight: 800;
-      line-height: 1.0;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-      animation: fadeUp 0.6s 0.1s ease both;
+      font-size: clamp(2.8rem,7vw,5.5rem); font-weight: 800; line-height: 1.0;
+      letter-spacing: -0.03em; margin-bottom: 1.5rem; animation: fadeUp 0.6s 0.1s ease both;
     }
-
-    h1 span {
-      color: var(--accent);
-    }
-
+    h1 span { color: var(--accent); }
     .tagline {
-      font-family: var(--font-mono);
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 480px;
-      margin-bottom: 3.5rem;
-      animation: fadeUp 0.6s 0.2s ease both;
+      font-family: var(--font-mono); font-size: 14px; font-weight: 300; color: var(--muted);
+      line-height: 1.7; max-width: 480px; margin-bottom: 3.5rem; animation: fadeUp 0.6s 0.2s ease both;
     }
-
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--border);
-      margin-bottom: 3rem;
-      animation: fadeUp 0.6s 0.25s ease both;
-    }
-
+    .divider { width: 100%; height: 1px; background: var(--border); margin-bottom: 3rem; animation: fadeUp 0.6s 0.25s ease both; }
     .section-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1rem;
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 1rem;
     }
 
-    .how-it-works {
-      animation: fadeUp 0.6s 0.3s ease both;
-      margin-bottom: 3rem;
-    }
-
-    .steps {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .step {
-      display: flex;
-      align-items: flex-start;
-      gap: 1.5rem;
-      padding: 1.25rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-
+    /* STEPS */
+    .how-it-works { animation: fadeUp 0.6s 0.3s ease both; margin-bottom: 3rem; }
+    .steps { display: flex; flex-direction: column; }
+    .step { display: flex; align-items: flex-start; gap: 1.5rem; padding: 1.25rem 0; border-bottom: 1px solid var(--border); }
     .step:last-child { border-bottom: none; }
-
-    .step-num {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--accent);
-      min-width: 28px;
-      padding-top: 2px;
-    }
-
-    .step-text {
-      font-size: 15px;
-      font-weight: 400;
-      color: #ccc;
-      line-height: 1.5;
-    }
-
+    .step-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); min-width: 28px; padding-top: 2px; }
+    .step-text { font-size: 15px; font-weight: 400; color: #ccc; line-height: 1.5; }
     .step-text code {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      background: var(--accent-dim);
-      color: var(--accent);
-      border: 1px solid rgba(200,255,0,0.15);
-      padding: 2px 8px;
-      border-radius: 4px;
+      font-family: var(--font-mono); font-size: 13px; background: var(--accent-dim);
+      color: var(--accent); border: 1px solid rgba(200,255,0,0.15); padding: 2px 8px; border-radius: 4px;
     }
 
-    .links-section {
-      animation: fadeUp 0.6s 0.4s ease both;
-      margin-bottom: 3rem;
+    /* ADD LINK */
+    .upload-section { animation: fadeUp 0.6s 0.35s ease both; margin-bottom: 3rem; }
+    .upload-box {
+      background: var(--surface); border: 1px dashed #333;
+      border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 12px;
     }
-
-    .link-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.1rem 1.4rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin-bottom: 10px;
-      text-decoration: none;
-      color: var(--text);
-      transition: border-color 0.2s, background 0.2s;
-      gap: 12px;
+    .upload-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .upload-input {
+      flex: 1; min-width: 140px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 14px; font-family: var(--font-mono); font-size: 13px; color: var(--text);
+      outline: none; transition: border-color 0.2s;
     }
-
-    .link-card:hover {
-      border-color: rgba(200,255,0,0.3);
-      background: rgba(200,255,0,0.03);
-    }
-
-    .link-card:hover .arrow { color: var(--accent); transform: translate(3px, -3px); }
-
-    .link-info {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      overflow: hidden;
-    }
-
-    .link-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .link-url {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 300;
-      color: var(--muted);
+    .upload-input:focus { border-color: rgba(200,255,0,0.4); }
+    .upload-input::placeholder { color: var(--muted); }
+    .upload-btn {
+      background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px;
+      padding: 10px 20px; font-family: var(--font-display); font-size: 13px; font-weight: 700;
+      cursor: pointer; flex-shrink: 0; letter-spacing: 0.04em; transition: opacity 0.15s, transform 0.1s;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
+    .upload-btn:hover { opacity: 0.85; } .upload-btn:active { transform: scale(0.97); }
+    .upload-hint { font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.6; }
+    .upload-hint code { background: var(--accent-dim); color: var(--accent); padding: 1px 6px; border-radius: 3px; font-size: 11px; }
+    .upload-success { font-family: var(--font-mono); font-size: 12px; min-height: 18px; }
 
-    .arrow {
-      font-size: 18px;
-      color: var(--muted);
-      flex-shrink: 0;
-      transition: color 0.2s, transform 0.2s;
+    /* QUICK LINKS */
+    .links-section { animation: fadeUp 0.6s 0.4s ease both; margin-bottom: 3rem; }
+    .link-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 1.4rem; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; margin-bottom: 10px; gap: 12px;
+      transition: border-color 0.2s, background 0.2s;
     }
-
-    .copy-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 12px;
+    .link-card:hover { border-color: rgba(200,255,0,0.3); background: var(--accent-dim); }
+    .link-card:hover .arrow { color: var(--accent); transform: translate(3px, -3px); }
+    .link-anchor { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; text-decoration: none; color: inherit; }
+    .link-info { display: flex; flex-direction: column; gap: 3px; overflow: hidden; flex: 1; min-width: 0; }
+    .link-title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .link-url { font-family: var(--font-mono); font-size: 12px; font-weight: 300; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .arrow { font-size: 18px; color: var(--muted); flex-shrink: 0; transition: color 0.2s, transform 0.2s; }
+    .delete-btn {
+      background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px;
+      padding: 4px 8px; border-radius: 4px; flex-shrink: 0; line-height: 1;
+      transition: color 0.15s, background 0.15s;
     }
+    .delete-btn:hover { color: var(--red); background: rgba(255,68,68,0.1); }
+    .empty-state { font-family: var(--font-mono); font-size: 12px; color: var(--muted); padding: 1rem 0; text-align: center; }
 
+    /* BUILDER */
+    .builder-section { animation: fadeUp 0.6s 0.45s ease both; margin-bottom: 3rem; }
+    .copy-row { display: flex; gap: 10px; align-items: center; }
     .copy-input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--muted);
-      outline: none;
-      min-width: 0;
+      flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 14px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); outline: none; min-width: 0;
     }
-
     .copy-btn {
-      background: var(--accent);
-      color: #0a0a0a;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 18px;
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      flex-shrink: 0;
-      letter-spacing: 0.04em;
-      transition: opacity 0.15s, transform 0.1s;
+      background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px;
+      padding: 10px 18px; font-family: var(--font-display); font-size: 12px; font-weight: 700;
+      cursor: pointer; flex-shrink: 0; letter-spacing: 0.04em; transition: opacity 0.15s, transform 0.1s;
     }
+    .copy-btn:hover { opacity: 0.85; } .copy-btn:active { transform: scale(0.97); }
+    #preview { margin-top: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); word-break: break-all; }
 
-    .copy-btn:hover { opacity: 0.85; }
-    .copy-btn:active { transform: scale(0.97); }
-
+    /* FOOTER */
     footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 1.5rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      animation: fadeUp 0.6s 0.5s ease both;
+      position: relative; z-index: 1; border-top: 1px solid var(--border);
+      max-width: 760px; margin: 0 auto; padding: 1.5rem 2rem;
+      display: none; align-items: center; justify-content: space-between;
     }
-
-    .footer-name {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 300;
-      color: var(--muted);
+    footer.visible { display: flex; }
+    .footer-name { font-family: var(--font-mono); font-size: 12px; font-weight: 300; color: var(--muted); }
+    .footer-name strong { color: var(--text); font-weight: 400; }
+    .footer-right { display: flex; align-items: center; gap: 12px; }
+    .lock-again-btn {
+      font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: none;
+      border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
     }
+    .lock-again-btn:hover { color: var(--text); border-color: #444; }
+    .footer-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.5; }
 
-    .footer-name strong {
-      color: var(--text);
-      font-weight: 400;
-    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
 
-    .footer-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      opacity: 0.5;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 480px) {
+    @media (max-width: 500px) {
       main { padding: 3rem 1.25rem 2rem; }
       .copy-row { flex-direction: column; }
       .copy-btn { width: 100%; }
+      .lock-box { padding: 2rem 1.5rem; }
     }
   </style>
 </head>
 <body>
   <div class="noise"></div>
 
-  <main>
+  <!-- LOCK SCREEN -->
+  <div id="lock-screen">
+    <div class="lock-box">
+      <div class="lock-icon">🔒</div>
+      <div>
+        <div class="lock-title">Enter access key</div>
+        <div class="lock-sub">Rajveer's Drop — private</div>
+      </div>
+      <input class="lock-input" type="password" id="key-input" placeholder="••••" maxlength="10"
+        onkeydown="if(event.key==='Enter') checkKey()">
+      <div class="lock-error" id="lock-error"></div>
+      <button class="lock-btn" onclick="checkKey()">Unlock →</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main id="main-content">
     <div class="badge">File sharing by Rajveer</div>
-
     <h1>Send files.<br><span>Fast & clean.</span></h1>
-
-    <p class="tagline">
-      A personal file-sharing server. You'll get a direct link — just click and download. No sign-ups, no fuss.
-    </p>
+    <p class="tagline">A personal file-sharing server. Share a direct link — click and download. No sign-ups, no fuss.</p>
 
     <div class="divider"></div>
 
@@ -343,67 +235,158 @@
         </div>
         <div class="step">
           <span class="step-num">03</span>
-          <span class="step-text">Need help or more info? Check the <code>/help.txt</code> page below.</span>
+          <span class="step-text">Need help? Check the <code>/help.txt</code> page in quick links below.</span>
         </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="upload-section">
+      <p class="section-label">Add a file link</p>
+      <div class="upload-box">
+        <div class="upload-row">
+          <input class="upload-input" type="text" id="new-label" placeholder="Label  e.g. Project Files" style="max-width:200px;">
+          <input class="upload-input" type="text" id="new-url" placeholder="URL or filename  e.g. file.zip">
+          <button class="upload-btn" onclick="addLink()">+ Add</button>
+        </div>
+        <div class="upload-hint">Enter a label + full URL, or just a filename like <code>notes.pdf</code> — it auto-adds the base URL.</div>
+        <div class="upload-success" id="upload-success"></div>
       </div>
     </section>
 
     <section class="links-section">
       <p class="section-label">Quick links</p>
+      <div id="links-container"></div>
+    </section>
 
-      <a class="link-card" href="https://fr.lowkey.nichesite.org/help.txt" target="_blank">
-        <div class="link-info">
-          <span class="link-title">Help & Documentation</span>
-          <span class="link-url">fr.lowkey.nichesite.org/help.txt</span>
-        </div>
-        <span class="arrow">↗</span>
-      </a>
+    <div class="divider"></div>
 
-      <a class="link-card" href="https://fr.lowkey.nichesite.org/" target="_blank">
-        <div class="link-info">
-          <span class="link-title">File Server Root</span>
-          <span class="link-url">fr.lowkey.nichesite.org/</span>
-        </div>
-        <span class="arrow">↗</span>
-      </a>
-
-      <div style="margin-top: 1.5rem;">
-        <p class="section-label">Paste a file path to build your link</p>
-        <div class="copy-row">
-          <input class="copy-input" type="text" id="pathInput" placeholder="e.g. myfile.zip" oninput="buildLink()">
-          <button class="copy-btn" onclick="copyLink()">Copy link</button>
-        </div>
-        <div id="preview" style="margin-top: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted);"></div>
+    <section class="builder-section">
+      <p class="section-label">Build a shareable link</p>
+      <div class="copy-row">
+        <input class="copy-input" type="text" id="pathInput" placeholder="e.g. myfile.zip" oninput="buildLink()">
+        <button class="copy-btn" onclick="copyLink()">Copy link</button>
       </div>
+      <div id="preview"></div>
     </section>
   </main>
 
-  <footer>
+  <footer id="footer">
     <span class="footer-name">Made by <strong>Rajveer Singh Saini</strong></span>
-    <div class="footer-dot"></div>
+    <div class="footer-right">
+      <button class="lock-again-btn" onclick="lockSite()">Lock site</button>
+      <div class="footer-dot"></div>
+    </div>
   </footer>
 
   <script>
+    const KEY = '1667';
+    const BASE = 'https://fr.lowkey.nichesite.org/';
+    const STORE = 'rajveer_drop_links';
+
+    const DEFAULTS = [
+      { label: 'Help & Documentation', url: BASE + 'help.txt' },
+      { label: 'File Server Root', url: BASE }
+    ];
+
+    function checkKey() {
+      const val = document.getElementById('key-input').value.trim();
+      const input = document.getElementById('key-input');
+      const err = document.getElementById('lock-error');
+      if (val === KEY) {
+        document.getElementById('lock-screen').classList.add('hidden');
+        document.getElementById('main-content').classList.add('visible');
+        document.getElementById('footer').classList.add('visible');
+        err.textContent = '';
+        renderLinks();
+      } else {
+        input.classList.add('error');
+        err.textContent = 'Wrong key. Try again.';
+        input.value = '';
+        setTimeout(() => input.classList.remove('error'), 400);
+      }
+    }
+
+    function lockSite() {
+      document.getElementById('lock-screen').classList.remove('hidden');
+      document.getElementById('main-content').classList.remove('visible');
+      document.getElementById('footer').classList.remove('visible');
+      document.getElementById('key-input').value = '';
+      document.getElementById('lock-error').textContent = '';
+    }
+
+    function getLinks() {
+      try { const s = localStorage.getItem(STORE); return s ? JSON.parse(s) : [...DEFAULTS]; }
+      catch { return [...DEFAULTS]; }
+    }
+
+    function saveLinks(links) {
+      try { localStorage.setItem(STORE, JSON.stringify(links)); } catch {}
+    }
+
+    function esc(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderLinks() {
+      const c = document.getElementById('links-container');
+      const links = getLinks();
+      if (!links.length) { c.innerHTML = '<div class="empty-state">No links yet — add one above.</div>'; return; }
+      c.innerHTML = links.map((l, i) => `
+        <div class="link-card">
+          <a class="link-anchor" href="${esc(l.url)}" target="_blank" rel="noopener">
+            <div class="link-info">
+              <span class="link-title">${esc(l.label)}</span>
+              <span class="link-url">${esc(l.url)}</span>
+            </div>
+            <span class="arrow">↗</span>
+          </a>
+          <button class="delete-btn" onclick="deleteLink(${i})" title="Remove">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function addLink() {
+      const label = document.getElementById('new-label').value.trim();
+      const raw = document.getElementById('new-url').value.trim();
+      const el = document.getElementById('upload-success');
+      if (!label || !raw) {
+        el.style.color = '#ff4444'; el.textContent = 'Please fill in both fields.';
+        setTimeout(() => el.textContent = '', 2500); return;
+      }
+      const url = raw.startsWith('http') ? raw : BASE + raw.replace(/^\/+/, '');
+      const links = getLinks();
+      links.push({ label, url });
+      saveLinks(links); renderLinks();
+      document.getElementById('new-label').value = '';
+      document.getElementById('new-url').value = '';
+      el.style.color = 'var(--accent)'; el.textContent = 'Link added!';
+      setTimeout(() => el.textContent = '', 2000);
+    }
+
+    function deleteLink(i) {
+      const links = getLinks();
+      links.splice(i, 1);
+      saveLinks(links); renderLinks();
+    }
+
     function buildLink() {
       const path = document.getElementById('pathInput').value.trim().replace(/^\/+/, '');
-      const preview = document.getElementById('preview');
-      if (path) {
-        preview.textContent = 'https://fr.lowkey.nichesite.org/' + path;
-      } else {
-        preview.textContent = '';
-      }
+      document.getElementById('preview').textContent = path ? BASE + path : '';
     }
 
     function copyLink() {
       const path = document.getElementById('pathInput').value.trim().replace(/^\/+/, '');
       if (!path) return;
-      const url = 'https://fr.lowkey.nichesite.org/' + path;
-      navigator.clipboard.writeText(url).then(() => {
+      navigator.clipboard.writeText(BASE + path).then(() => {
         const btn = document.querySelector('.copy-btn');
         btn.textContent = 'Copied!';
         setTimeout(() => btn.textContent = 'Copy link', 1800);
       });
     }
+
+    document.getElementById('key-input').focus();
   </script>
 </body>
 </html>
